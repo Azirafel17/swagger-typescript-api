@@ -82,13 +82,19 @@ const describeReturnType = () => {
 /**
 <%~ routeDocs.description %>
 
-*<% /* Here you can add some other JSDoc tags */ %>
+ *<% /* Here you can add some other JSDoc tags */ %>
 
 <%~ routeDocs.lines %>
 
-*/
-<%~ route.routeName.usage %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %>
-=>
-
-<%~ $ %><% method %><%~ type %>(`<%~ path %>`,{<%~ bodyTmpl ? `data: ${bodyTmpl},` : '' %>,
-...<%~ _.get(requestConfigParam, "name") %>,<%~`isBearer: ${securityTmpl}`%>})
+ */
+<%~ route.routeName.usage %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
+    <%~ config.singleHttpClient ? 'this.http.request' : 'this.request' %><<%~ type %>, <%~ errorType %>>({
+        path: `<%~ path %>`,
+        method: '<%~ _.upperCase(method) %>',
+        <%~ queryTmpl ? `query: ${queryTmpl},` : '' %>
+        <%~ bodyTmpl ? `body: ${bodyTmpl},` : '' %>
+        <%~ securityTmpl ? `secure: ${securityTmpl},` : '' %>
+        <%~ bodyContentKindTmpl ? `type: ${bodyContentKindTmpl},` : '' %>
+        <%~ responseFormatTmpl ? `format: ${responseFormatTmpl},` : '' %>
+        ...<%~ _.get(requestConfigParam, "name") %>,
+    })<%~ route.namespace ? ',' : '' %>
