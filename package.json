@@ -1,6 +1,6 @@
 {
   "name": "aak-swagger-typescript-api",
-  "version": "13.0.3",
+  "version": "1.0.2",
   "description": "Generate typescript/javascript api from swagger schema",
   "scripts": {
     "update-deps-to-latest": "npx --yes npm-check-updates && npm i",
@@ -118,7 +118,8 @@
     "rest",
     "codegen",
     "generation",
-    "http"
+    "http",
+    "aak-nuxt-auth-fetch"
   ],
   "files": [
     "src",
@@ -129,11 +130,11 @@
     "LICENSE"
   ],
   "bugs": {
-    "url": "https://github.com/acacode/swagger-typescript-api/issues"
+    "url": "https://github.com/Azirafel17/swagger-typescript-api/issues"
   },
-  "homepage": "https://github.com/acacode/swagger-typescript-api",
+  "homepage": "https://github.com/Azirafel17/swagger-typescript-api",
   "repository": {
     "type": "git",
-    "url": "git://github.com/acacode/swagger-typescript-api"
+    "url": "git://github.com/Azirafel17/swagger-typescript-api"
   }
 }
