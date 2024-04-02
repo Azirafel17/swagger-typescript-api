@@ -1,8 +1,13 @@
 # aak-swagger-typescript-api 
-## This is a fork of the package [swagger-typescript-api](https://www.npmjs.com/package/swagger-typescript-api) 🔱
 
-## 🔥 This package is designed to work together with the package [aak-nuxt-auth-fetch](https://www.npmjs.com/package/aak-nuxt-auth-fetch) ❗❗❗
- 
+
+### This is a fork of the package [swagger-typescript-api](https://www.npmjs.com/package/swagger-typescript-api) 🔱
+
+### 🔥 This package is designed to work together with the package [aak-nuxt-auth-fetch](https://www.npmjs.com/package/aak-nuxt-auth-fetch)
+
+---
+<br>
+
 [![NPM badge](https://img.shields.io/npm/v/aak-swagger-typescript-api.svg)](https://www.npmjs.com/package/aak-swagger-typescript-api) 
 
 <img src="https://raw.githubusercontent.com/acacode/swagger-typescript-api/master/assets/swagger-typescript-api-logo.png" align="left"
