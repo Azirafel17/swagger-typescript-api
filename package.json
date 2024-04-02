@@ -3,7 +3,6 @@
   "version": "13.0.3",
   "description": "Generate typescript/javascript api from swagger schema",
   "scripts": {
-    "release-light": "npm run prepack && changelogen --release && npm publish --registry http://npm.lama.tomsk.ru/",
     "update-deps-to-latest": "npx --yes npm-check-updates && npm i",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -74,9 +73,7 @@
   "typings": "./index.d.ts",
   "main": "src/index.js",
   "devDependencies": {
-    "eslint": "^8.44.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^5.0.0",
+    "@jsdevtools/npm-publish": "^3.1.1",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20.4.1",
     "@types/prettier": "^2.7.3",
@@ -84,6 +81,9 @@
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "git-diff": "^2.0.6",
     "husky": "^8.0.3",
     "pretty-quick": "^3.1.3",
