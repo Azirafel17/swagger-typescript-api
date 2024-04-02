@@ -5,3 +5,5 @@ swagger-test-cli.*
 swagger-test-cli
 dist
 .env
+utils
+swagger.json

@@ -1,8 +1,9 @@
 {
-  "name": "swagger-typescript-api",
+  "name": "aak-swagger-typescript-api",
   "version": "13.0.3",
   "description": "Generate typescript/javascript api from swagger schema",
   "scripts": {
+    "release-light": "npm run prepack && changelogen --release && npm publish --registry http://npm.lama.tomsk.ru/",
     "update-deps-to-latest": "npx --yes npm-check-updates && npm i",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
