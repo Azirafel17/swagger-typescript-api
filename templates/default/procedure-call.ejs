@@ -8,10 +8,6 @@ const queryName = (query && query.name) || "params";
 const pathParams = _.values(parameters);
 const pathParamsNames = _.map(pathParams, "name");
 
-
-
-
-const typeWithOutVoid = type === 'void' ? 'any' : type;
 const argToTmpl = ({ name, optional, type, defaultValue }) => `${name}${!defaultValue && optional ? '?' : ''}: ${type}${defaultValue ? ` = ${defaultValue}` : ''}`;
 
 const rawWrapperArgs = config.extractRequestParams ?
@@ -50,9 +46,9 @@ const securityTmpl = !!security;
 */
 <%~ route.routeName.usage %><%~ route.namespace ? ': ' : ' = ' %>
 (<%~ wrapperArgs %>)
-<%~ `: Promise<${typeWithOutVoid}>` %>
+<%~ `: Promise<${type}>` %>
 =>
-<%~ `$${method}` %><<%~ typeWithOutVoid %>>
+<%~ `$${method}` %><<%~ type %>>
     (`<%~ path %>`,
     {
         <%~ bodyTmpl ? `${bodyTmpl},` : '' %>

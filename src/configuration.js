@@ -390,7 +390,8 @@ class CodeGenConfig {
     objectAssign(this.Ts, codeGenConstructs);
     objectAssign(this.primitiveTypes, primitiveTypeConstructs);
 
-    this.defaultResponseType = this.Ts.Keyword.Void;
+    // the default type value
+    this.defaultResponseType = this.Ts.Keyword.Unknown;
 
     this.update({
       ...otherConfig,
