@@ -66,7 +66,7 @@ Options:
   --extract-response-body       extract response body type to data contract (default: false)
   --extract-response-error      extract response error type to data contract (default: false)
   --silent                      Output only errors to console (default: false)
-  --default-response <type>     default type for empty response schema (default: "unknown")
+  --default-response <type>     default type for empty response schema (default: "void")
   --api-class-name <string>     name of the api class (default: "Api")
   --patch                       fix up small errors in the swagger source definition (default: false)
   --sort-types                  sort fields and types (default: false)

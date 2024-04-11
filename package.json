@@ -1,6 +1,6 @@
 {
   "name": "aak-swagger-typescript-api",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Generate typescript/javascript api from swagger schema",
   "scripts": {
     "update-deps-to-latest": "npx --yes npm-check-updates && npm i",
