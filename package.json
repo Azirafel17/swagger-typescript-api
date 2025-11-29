@@ -1,6 +1,6 @@
 {
   "name": "aak-swagger-typescript-api",
-  "version": "17.0.1",
+  "version": "17.0.3",
   "repository": "github:Azirafel17/swagger-typescript-api",
   "license": "MIT",
   "author": "Sergey Volkov <js2me@outlook.com>",
@@ -31,6 +31,7 @@
     "templates"
   ],
   "scripts": {
+    "npm-publish": "npm publish",
     "build": "tsdown",
     "cli:help": "node index.js -h",
     "cli:json": "node index.js -r -d -p ./swagger-test-cli.json -n swagger-test-cli.ts",

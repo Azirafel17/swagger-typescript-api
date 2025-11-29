@@ -17,9 +17,9 @@ export class TemplatesGenProcess {
   rootDir = path.resolve(__dirname, "..");
 
   paths = {
-    baseTemplates: "templates/base",
-    httpClientTemplates: "templates/base/http-clients",
-    moduleApiTemplates: "templates/modular",
+    // baseTemplates: "templates/base",
+    // httpClientTemplates: "templates/base/http-clients",
+    // moduleApiTemplates: "templates/modular",
     defaultApiTemplates: "templates/default",
   };
 
@@ -98,43 +98,41 @@ export class TemplatesGenProcess {
 
   getTemplates = () => {
     const outputFiles = [];
-    const baseTemplates = this.getTemplateNamesFromDir(
-      this.paths.baseTemplates,
-    );
-    const httpClientTemplates = this.getTemplateNamesFromDir(
-      this.paths.httpClientTemplates,
-    );
-    const apiTemplatesPath = this.config.modular
-      ? this.paths.moduleApiTemplates
-      : this.paths.defaultApiTemplates;
+    // const baseTemplates = this.getTemplateNamesFromDir(
+    //   this.paths.baseTemplates,
+    // );
+    // const httpClientTemplates = this.getTemplateNamesFromDir(
+    //   this.paths.httpClientTemplates,
+    // );
+    const apiTemplatesPath = this.paths.defaultApiTemplates;
     const apiTemplates = this.getTemplateNamesFromDir(apiTemplatesPath);
 
-    const usingHttpClientTemplate = httpClientTemplates.find((template) =>
-      template.startsWith(`${this.config.httpClientType}-`),
-    );
+    // const usingHttpClientTemplate = httpClientTemplates.find((template) =>
+    //   template.startsWith(`${this.config.httpClientType}-`),
+    // );
 
-    let httpClientTemplateContent = "";
+    // let httpClientTemplateContent = "";
 
-    if (usingHttpClientTemplate) {
-      httpClientTemplateContent = this.fixTemplateContent(
-        this.getTemplateContent(
-          `${this.paths.httpClientTemplates}/${usingHttpClientTemplate}`,
-        ),
-      );
-    }
+    // if (usingHttpClientTemplate) {
+    //   httpClientTemplateContent = this.fixTemplateContent(
+    //     this.getTemplateContent(
+    //       `${this.paths.httpClientTemplates}/${usingHttpClientTemplate}`,
+    //     ),
+    //   );
+    // }
 
-    for (const fileName of baseTemplates) {
-      const templateContent =
-        (fileName === "http-client.ejs" && httpClientTemplateContent) ||
-        this.fixTemplateContent(
-          this.getTemplateContent(`${this.paths.baseTemplates}/${fileName}`),
-        );
+    // for (const fileName of baseTemplates) {
+    //   const templateContent =
+    //     (fileName === "http-client.ejs" && httpClientTemplateContent) ||
+    //     this.fixTemplateContent(
+    //       this.getTemplateContent(`${this.paths.baseTemplates}/${fileName}`),
+    //     );
 
-      outputFiles.push({
-        name: fileName,
-        content: templateContent,
-      });
-    }
+    //   outputFiles.push({
+    //     name: fileName,
+    //     content: templateContent,
+    //   });
+    // }
 
     for (const fileName of apiTemplates) {
       outputFiles.push({
