@@ -1354,6 +1354,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aak-swagger-typescript-api@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "aak-swagger-typescript-api@workspace:."
+  dependencies:
+    "@biomejs/biome": "npm:2.3.7"
+    "@biomejs/js-api": "npm:4.0.0"
+    "@biomejs/wasm-nodejs": "npm:2.3.7"
+    "@changesets/changelog-github": "npm:0.5.1"
+    "@changesets/cli": "npm:2.29.7"
+    "@tsconfig/node20": "npm:20.1.8"
+    "@tsconfig/strictest": "npm:2.0.8"
+    "@types/lodash": "npm:^4.17.20"
+    "@types/node": "npm:24.10.1"
+    "@types/swagger-schema-official": "npm:^2.0.25"
+    "@types/swagger2openapi": "npm:7.0.4"
+    axios: "npm:1.13.2"
+    c12: "npm:^3.3.0"
+    citty: "npm:^0.1.6"
+    consola: "npm:^3.4.2"
+    eta: "npm:^3.5.0"
+    lodash: "npm:^4.17.21"
+    nanoid: "npm:^5.1.6"
+    openapi-types: "npm:^12.1.3"
+    swagger-schema-official: "npm:2.0.0-bab6bed"
+    swagger2openapi: "npm:^7.0.8"
+    tsdown: "npm:0.16.6"
+    typedoc: "npm:0.28.14"
+    typescript: "npm:~5.9.3"
+    vitest: "npm:4.0.13"
+    yaml: "npm:^2.8.1"
+  bin:
+    aak-swagger-typescript-api: ./dist/cli.cjs
+    sta: ./dist/cli.cjs
+  languageName: unknown
+  linkType: soft
+
 "abbrev@npm:^3.0.0":
   version: 3.0.1
   resolution: "abbrev@npm:3.0.1"
@@ -3719,42 +3755,6 @@ __metadata:
   checksum: 10c0/58d1f8302aaa14fc64658b2821d70a6d06883a5270c71c210e8b6e5655ee2d7e01543383ddb2948ada368b51a22d71a9f9fcc0b903041719897f866b9c65d201
   languageName: node
   linkType: hard
-
-"swagger-typescript-api@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "swagger-typescript-api@workspace:."
-  dependencies:
-    "@biomejs/biome": "npm:2.3.7"
-    "@biomejs/js-api": "npm:4.0.0"
-    "@biomejs/wasm-nodejs": "npm:2.3.7"
-    "@changesets/changelog-github": "npm:0.5.1"
-    "@changesets/cli": "npm:2.29.7"
-    "@tsconfig/node20": "npm:20.1.8"
-    "@tsconfig/strictest": "npm:2.0.8"
-    "@types/lodash": "npm:^4.17.20"
-    "@types/node": "npm:24.10.1"
-    "@types/swagger-schema-official": "npm:^2.0.25"
-    "@types/swagger2openapi": "npm:7.0.4"
-    axios: "npm:1.13.2"
-    c12: "npm:^3.3.0"
-    citty: "npm:^0.1.6"
-    consola: "npm:^3.4.2"
-    eta: "npm:^3.5.0"
-    lodash: "npm:^4.17.21"
-    nanoid: "npm:^5.1.6"
-    openapi-types: "npm:^12.1.3"
-    swagger-schema-official: "npm:2.0.0-bab6bed"
-    swagger2openapi: "npm:^7.0.8"
-    tsdown: "npm:0.16.6"
-    typedoc: "npm:0.28.14"
-    typescript: "npm:~5.9.3"
-    vitest: "npm:4.0.13"
-    yaml: "npm:^2.8.1"
-  bin:
-    sta: ./dist/cli.js
-    swagger-typescript-api: ./dist/cli.js
-  languageName: unknown
-  linkType: soft
 
 "swagger2openapi@npm:^7.0.8":
   version: 7.0.8

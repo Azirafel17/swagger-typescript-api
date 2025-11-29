@@ -1,10 +1,7 @@
 {
-  "name": "swagger-typescript-api",
-  "version": "13.2.16",
-  "description": "Generate the API client for Fetch or Axios from an OpenAPI Specification",
-  "homepage": "https://github.com/acacode/swagger-typescript-api",
-  "bugs": "https://github.com/acacode/swagger-typescript-api/issues",
-  "repository": "github:acacode/swagger-typescript-api",
+  "name": "aak-swagger-typescript-api",
+  "version": "17.0.1",
+  "repository": "github:Azirafel17/swagger-typescript-api",
   "license": "MIT",
   "author": "Sergey Volkov <js2me@outlook.com>",
   "maintainers": [
@@ -13,21 +10,21 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
     "./cli": {
-      "import": "./dist/cli.js",
+      "import": "./dist/cli.mjs",
       "require": "./dist/cli.cjs"
     },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
   "bin": {
-    "sta": "./dist/cli.js",
-    "swagger-typescript-api": "./dist/cli.js"
+    "aak-swagger-typescript-api": "./dist/cli.cjs",
+    "sta": "./dist/cli.cjs"
   },
   "files": [
     "dist",
@@ -37,6 +34,7 @@
     "build": "tsdown",
     "cli:help": "node index.js -h",
     "cli:json": "node index.js -r -d -p ./swagger-test-cli.json -n swagger-test-cli.ts",
+    "cli-my:json": "node dist/cli.cjs generate -r -d -p ./swagger-test-cli.json -n swagger-test-cli.ts --sort-routes --sort-types --extract-request-params",
     "cli:yaml": "node index.js -r -d -p ./swagger-test-cli.yaml -n swagger-test-cli.ts",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -81,7 +79,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": true,
+    "provenance": false,
     "registry": "https://registry.npmjs.org"
   },
   "typedocOptions": {

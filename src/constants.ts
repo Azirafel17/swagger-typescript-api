@@ -13,7 +13,7 @@ export const FILE_PREFIX = `/* eslint-disable */
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
+import { customUseFetch, type CustomFetchOptions } from "~/composables/fetch/customUseFetch";
 `;
 
 export const HTTP_CLIENT = {

@@ -1,0 +1,3423 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "Регистрация пользователя",
+        "tags": ["Users"]
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "Поддерживает фильтрацию по полям пользователя и его информации",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы (по умолчанию 1)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество элементов на странице (по умолчанию 10)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "firstName",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по имени (частичное совпадение)",
+            "schema": { "example": "Ivan", "type": "string" }
+          },
+          {
+            "name": "lastName",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по фамилии (частичное совпадение)",
+            "schema": { "example": "Petrov", "type": "string" }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по email (частичное совпадение)",
+            "schema": { "example": "example.com", "type": "string" }
+          },
+          {
+            "name": "gender",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по полу",
+            "schema": { "enum": ["MALE", "FEMALE", "OTHER"], "type": "string" }
+          },
+          {
+            "name": "nickname",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по никнейму (из userInfo)",
+            "schema": { "example": "coolUser", "type": "string" }
+          },
+          {
+            "name": "ageFrom",
+            "required": false,
+            "in": "query",
+            "description": "Минимальный возраст",
+            "schema": { "example": 18, "type": "number" }
+          },
+          {
+            "name": "ageTo",
+            "required": false,
+            "in": "query",
+            "description": "Максимальный возраст",
+            "schema": { "example": 26, "type": "number" }
+          },
+          {
+            "name": "cityId",
+            "required": false,
+            "in": "query",
+            "description": "UUID Города",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "zodiacSign",
+            "required": false,
+            "in": "query",
+            "description": "Знак зодиака",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ARIES",
+                "TAURUS",
+                "GEMINI",
+                "CANCER",
+                "LEO",
+                "VIRGO",
+                "LIBRA",
+                "SCORPIO",
+                "SAGITTARIUS",
+                "CAPRICORN",
+                "AQUARIUS",
+                "PISCES",
+                "NONE"
+              ]
+            }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "Список полей для выборки",
+            "schema": {
+              "example": ["id", "email", "firstName"],
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пагинированный список пользователей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSimpleUsersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Получение списка пользователей с пагинацией и фильтрацией",
+        "tags": ["Users"]
+      }
+    },
+    "/users/by-nickname/{nickname}": {
+      "get": {
+        "operationId": "getByNickname",
+        "parameters": [
+          {
+            "name": "nickname",
+            "required": true,
+            "in": "path",
+            "description": "Никнейм пользователя",
+            "schema": { "example": "CoolNick123", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Неверный формат никнейма" },
+          "404": { "description": "Пользователь с таким никнеймом не найден" }
+        },
+        "summary": "Получение пользователя по никнейму",
+        "tags": ["Users"]
+      }
+    },
+    "/users/update": {
+      "put": {
+        "operationId": "updateCurrentUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Обновление текущего пользователя",
+        "tags": ["Users"]
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Обновление пользователя",
+        "tags": ["Users"]
+      },
+      "get": {
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponseDto" }
+              }
+            }
+          }
+        },
+        "summary": "Получение пользователя по Id",
+        "tags": ["Users"]
+      }
+    },
+    "/users/{userId}/groups": {
+      "post": {
+        "operationId": "createGroup",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateGroupDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GroupResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Создать новую группу/роль для пользователя",
+        "tags": ["Users"]
+      },
+      "get": {
+        "operationId": "getUserGroups",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/GroupResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить все группы пользователя",
+        "tags": ["Users"]
+      }
+    },
+    "/users/{userId}/groups/{groupId}": {
+      "put": {
+        "operationId": "updateGroup",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GroupResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Обновить группу пользователя",
+        "tags": ["Users"]
+      },
+      "delete": {
+        "operationId": "deleteGroup",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить группу пользователя",
+        "tags": ["Users"]
+      }
+    },
+    "/users/new-faces": {
+      "get": {
+        "description": "Возвращает по 2 последних зарегистрированных мужчины и женщины",
+        "operationId": "getNewFaces",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Объект с массивами пользователей",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NewFacesResponseDto" }
+              }
+            }
+          }
+        },
+        "summary": "Получение последних зарегистрированных пользователей",
+        "tags": ["Users"]
+      }
+    },
+    "/users/photos/me": {
+      "get": {
+        "operationId": "getMyPhotos",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["User Photos"]
+      }
+    },
+    "/users/photos": {
+      "post": {
+        "operationId": "uploadPhotos",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Upload user photos",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                },
+                "$ref": "#/components/schemas/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadPhotosResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Загрузка фото пользователя",
+        "tags": ["User Photos"]
+      },
+      "delete": {
+        "description": "Удаляет указанные фото пользователя. Если удаляется главное фото, следующее по порядку становится главным.",
+        "operationId": "deletePhotos",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DeletePhotosDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Фото успешно удалены" },
+          "400": { "description": "Некорректный запрос" },
+          "404": { "description": "Фото не найдены" }
+        },
+        "security": [{ "bearer": [] }, { "bearer": [] }],
+        "summary": "Удаление фото",
+        "tags": ["User Photos"]
+      }
+    },
+    "/users/photos/uploadMainPhoto": {
+      "post": {
+        "operationId": "uploadMainPhoto",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Upload main photo",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                },
+                "$ref": "#/components/schemas/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully uploaded main photo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPhotoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Загрузка главного фото",
+        "tags": ["User Photos"]
+      }
+    },
+    "/users/photos/order": {
+      "put": {
+        "operationId": "updatePhotosOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PhotosOrderDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPhotoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Изменение порядка фотографий",
+        "tags": ["User Photos"]
+      }
+    },
+    "/users/photos/{userId}": {
+      "get": {
+        "operationId": "getPhotos",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPhotoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Получить все фото пользователя",
+        "tags": ["User Photos", "User Photos"]
+      }
+    },
+    "/users/photos/unverified": {
+      "get": {
+        "operationId": "getUnverifiedPhotos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPhotoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить все не проверенные фото",
+        "tags": ["User Photos", "Moderation"]
+      }
+    },
+    "/users/photos/{photoId}/verify": {
+      "patch": {
+        "operationId": "verifyPhoto",
+        "parameters": [
+          {
+            "name": "photoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPhotoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Пометить фото как проверенное",
+        "tags": ["User Photos", "Moderation"]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "Authenticates user and returns access and refresh tokens",
+        "operationId": "login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthLoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthLoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" },
+          "429": { "description": "Too many login attempts" }
+        },
+        "summary": "User authentication",
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "description": "Invalidates the current access token",
+        "operationId": "logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully logged out",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LogoutResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized access" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "User logout",
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/refresh": {
+      "get": {
+        "description": "Generates new access and refresh tokens",
+        "operationId": "refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Tokens successfully refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthLoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid or expired refresh token" }
+        },
+        "security": [{ "refresh-token": [] }],
+        "summary": "Refresh tokens",
+        "tags": ["Auth"]
+      }
+    },
+    "/chats/{id}/block": {
+      "put": {
+        "description": "Блокировать чат",
+        "operationId": "blockChat",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Чат успешно заблокирован" },
+          "400": { "description": "Неверные данные запроса" },
+          "403": { "description": "Пользователь заблокирован" },
+          "404": { "description": "Пользователь не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Блокировать чат с пользователем",
+        "tags": ["Chats"]
+      }
+    },
+    "/chats/{id}/unblock": {
+      "put": {
+        "description": "Разблокировать чат",
+        "operationId": "unBlockChat",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Чат успешно заблокирован" },
+          "400": { "description": "Неверные данные запроса" },
+          "403": { "description": "Пользователь заблокирован" },
+          "404": { "description": "Пользователь не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Разблокировать чат с пользователем",
+        "tags": ["Chats"]
+      }
+    },
+    "/chats": {
+      "post": {
+        "description": "Создает новый чат 1 на 1 с указанным пользователем",
+        "operationId": "createChat",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateChatDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Чат успешно создан",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ChatResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Неверные данные запроса" },
+          "403": { "description": "Пользователь заблокирован" },
+          "404": { "description": "Пользователь не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Создать чат с пользователем",
+        "tags": ["Chats"]
+      },
+      "get": {
+        "description": "Возвращает пагинированный список чатов текущего пользователя",
+        "operationId": "getUserChats",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество элементов на странице",
+            "schema": { "example": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список чатов успешно получен",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ChatListResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список чатов пользователя",
+        "tags": ["Chats"]
+      }
+    },
+    "/chats/{id}": {
+      "get": {
+        "description": "Возвращает подробную информацию о конкретном чате",
+        "operationId": "getChat",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Информация о чате успешно получена",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ChatResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Чат не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить информацию о чате",
+        "tags": ["Chats"]
+      },
+      "delete": {
+        "description": "Удаляет чат для текущего пользователя. Если оба пользователя удалили чат, он удаляется полностью.",
+        "operationId": "deleteChat",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Чат успешно удален",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteChatResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Чат не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить чат",
+        "tags": ["Chats"]
+      }
+    },
+    "/chats/{chatId}/messages": {
+      "post": {
+        "description": "Создает новое сообщение в указанном чате",
+        "operationId": "createMessage",
+        "parameters": [
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateMessageDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Сообщение успешно отправлено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MessageResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Неверные данные сообщения" },
+          "403": { "description": "Чат заблокирован или нет доступа" },
+          "404": { "description": "Чат не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Отправить сообщение в чат",
+        "tags": ["Messages"]
+      },
+      "get": {
+        "description": "Возвращает пагинированную историю сообщений указанного чата",
+        "operationId": "getChatMessages",
+        "parameters": [
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество элементов на странице",
+            "schema": { "example": 50, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "История сообщений успешно получена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageListResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Чат не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить историю сообщений чата",
+        "tags": ["Messages"]
+      }
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "put": {
+        "description": "Редактирует текст сообщения. Доступно только для непрочитанных сообщений.",
+        "operationId": "updateMessage",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "description": "UUID сообщения",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateMessageDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Сообщение успешно отредактировано",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MessageResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Сообщение уже прочитано" },
+          "403": { "description": "Нет прав на редактирование" },
+          "404": { "description": "Сообщение не найдено" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Редактировать сообщение",
+        "tags": ["Messages"]
+      },
+      "delete": {
+        "description": "Удаляет сообщение. Доступно только для непрочитанных сообщений.",
+        "operationId": "deleteMessage",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "description": "UUID сообщения",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Сообщение успешно удалено" },
+          "400": { "description": "Сообщение уже прочитано" },
+          "403": { "description": "Нет прав на удаление" },
+          "404": { "description": "Сообщение не найдено" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить сообщение",
+        "tags": ["Messages"]
+      }
+    },
+    "/chats/{chatId}/messages/{messageId}/read": {
+      "post": {
+        "description": "Отмечает сообщение как прочитанное текущим пользователем",
+        "operationId": "markAsRead",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "description": "UUID сообщения",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сообщение отмечено как прочитанное",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkAsReadResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Нельзя отметить свое сообщение как прочитанное"
+          },
+          "404": { "description": "Сообщение не найдено" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Отметить сообщение как прочитанное",
+        "tags": ["Messages"]
+      }
+    },
+    "/chats/{chatId}/messages/{messageId}/reaction": {
+      "put": {
+        "description": "Добавляет или изменяет реакцию (эмодзи) на сообщение",
+        "operationId": "addReaction",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "description": "UUID сообщения",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "path",
+            "description": "UUID чата",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MessageReactionDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Реакция успешно добавлена/изменена",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MessageResponseDto" }
+              }
+            }
+          },
+          "403": { "description": "Нет доступа к чату" },
+          "404": { "description": "Сообщение не найдено" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Добавить/изменить реакцию на сообщение",
+        "tags": ["Messages"]
+      }
+    },
+    "/chats/unread/counts": {
+      "get": {
+        "description": "Возвращает общее количество непрочитанных сообщений и детали по чатам",
+        "operationId": "getUnreadCounts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Счетчики непрочитанных сообщений успешно получены",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UnreadResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить количество непрочитанных сообщений",
+        "tags": ["Chats"]
+      }
+    },
+    "/chats/unread/chats": {
+      "get": {
+        "description": "Возвращает детальную информацию по каждому чату с непрочитанными сообщениями",
+        "operationId": "getChatsWithUnread",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список чатов с непрочитанными сообщениями успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ChatUnreadDto" }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить чаты с непрочитанными сообщениями",
+        "tags": ["Chats"]
+      }
+    },
+    "/blocks": {
+      "post": {
+        "description": "Блокирует указанного пользователя и все связанные чаты",
+        "operationId": "blockUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBlockDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пользователь успешно заблокирован",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BlockResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Неверные данные запроса" },
+          "404": { "description": "Пользователь не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Заблокировать пользователя",
+        "tags": ["Blocks"]
+      },
+      "get": {
+        "description": "Возвращает список всех пользователей, заблокированных текущим пользователем",
+        "operationId": "getUserBlocks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список заблокированных пользователей успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список заблокированных пользователей",
+        "tags": ["Blocks"]
+      },
+      "delete": {
+        "description": "Удаляет все блокировки, установленные текущим пользователем",
+        "operationId": "deleteAllUserBlocks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Все блокировки успешно удалены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAllBlocksResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить все мои блокировки",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/{userId}": {
+      "delete": {
+        "description": "Разблокирует указанного пользователя и связанные чаты",
+        "operationId": "unblockUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "UUID пользователя для разблокировки",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пользователь успешно разблокирован",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnblockResponseMessageDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Блокировка не найдена" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Разблокировать пользователя",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/blocked-users": {
+      "get": {
+        "description": "Возвращает список пользователей, заблокированных текущим пользователем",
+        "operationId": "getBlockedUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список заблокированных пользователей успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedUsersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список заблокированных пользователей (только пользователи)",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/blocked-by": {
+      "get": {
+        "description": "Возвращает список пользователей, заблокировавших текущего пользователя",
+        "operationId": "getBlockedByUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список пользователей, которые заблокировали меня, успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedUsersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список пользователей, которые заблокировали меня",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/check/{userId}": {
+      "get": {
+        "description": "Проверяет, заблокирован ли указанный пользователь для текущего пользователя",
+        "operationId": "checkBlock",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "UUID пользователя для проверки",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Статус блокировки успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockStatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Проверить блокировку",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/mutual": {
+      "get": {
+        "description": "Возвращает список взаимных блокировок (когда оба пользователя заблокировали друг друга)",
+        "operationId": "getMutualBlocks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список взаимных блокировок успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить взаимные блокировки",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/ids/blocked": {
+      "get": {
+        "description": "Возвращает массив ID пользователей, заблокированных текущим пользователем",
+        "operationId": "getBlockedUsersIds",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ID заблокированных пользователей успешно получены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userIds": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "example": ["uuid1", "uuid2"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить ID заблокированных пользователей",
+        "tags": ["Blocks"]
+      }
+    },
+    "/blocks/ids/blocked-by": {
+      "get": {
+        "description": "Возвращает массив ID пользователей, заблокировавших текущего пользователя",
+        "operationId": "getBlockedByUsersIds",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ID пользователей, которые заблокировали меня, успешно получены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userIds": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "example": ["uuid1", "uuid2"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить ID пользователей, которые заблокировали меня",
+        "tags": ["Blocks"]
+      }
+    },
+    "/online-status/stats": {
+      "get": {
+        "operationId": "getOnlineStats",
+        "parameters": [],
+        "responses": { "200": { "description": "Статистика получена" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить статистику онлайн пользователей",
+        "tags": ["Online Status"]
+      }
+    },
+    "/online-status/online-users": {
+      "get": {
+        "operationId": "getOnlineUsers",
+        "parameters": [],
+        "responses": { "200": { "description": "Список получен" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список онлайн пользователей",
+        "tags": ["Online Status"]
+      }
+    },
+    "/cities/all": {
+      "get": {
+        "operationId": "findAllWithoutPagination",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of all cities",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CityListResponseDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Cities"]
+      }
+    },
+    "/cities": {
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated list of cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCityResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Cities"]
+      },
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCityDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created city",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CityResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Cities"]
+      }
+    },
+    "/cities/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved city",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CityResponseDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Cities"]
+      },
+      "put": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCityDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated city",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CityResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Cities"]
+      },
+      "delete": {
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted city",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCityResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Cities"]
+      }
+    },
+    "/reports": {
+      "post": {
+        "description": "Создает новую жалобу на указанного пользователя",
+        "operationId": "createReport",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateReportDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Жалоба успешно отправлена",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Неверные данные запроса" },
+          "404": { "description": "Пользователь не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Подать жалобу на пользователя",
+        "tags": ["Reports"]
+      },
+      "get": {
+        "description": "Возвращает пагинированный список всех жалоб",
+        "operationId": "getReports",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество элементов на странице",
+            "schema": { "example": 20, "type": "number" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по статусу жалобы",
+            "schema": { "enum": ["PENDING", "RESOLVED"], "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список жалоб успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить список жалоб (только для админов/модераторов)",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/my": {
+      "get": {
+        "description": "Возвращает список жалоб, поданных текущим пользователем",
+        "operationId": "getMyReports",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество элементов на странице",
+            "schema": { "example": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список моих жалоб успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить мои жалобы",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/reported-user/{userId}": {
+      "get": {
+        "description": "Возвращает список жалоб на указанного пользователя",
+        "operationId": "getReportsByReportedUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "UUID пользователя",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список жалоб на пользователя успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ReportResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить жалобы на пользователя (только для админов/модераторов)",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/{id}": {
+      "get": {
+        "description": "Возвращает подробную информацию о конкретной жалобе",
+        "operationId": "getReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID жалобы",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Информация о жалобе успешно получена",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Жалоба не найдена" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить информацию о жалобе (только для админов/модераторов)",
+        "tags": ["Reports"]
+      },
+      "delete": {
+        "description": "Удаляет жалобу из системы",
+        "operationId": "deleteReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID жалобы",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Жалоба успешно удалена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteReportResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Жалоба не найдена" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить жалобу (только для админов/модераторов)",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/{id}/resolve": {
+      "put": {
+        "description": "Отмечает жалобу как рассмотренную",
+        "operationId": "resolveReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID жалобы",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResolveReportDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Жалоба успешно рассмотрена",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Жалоба уже рассмотрена" },
+          "404": { "description": "Жалоба не найдена" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Рассмотреть жалобу (только для админов/модераторов)",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/stats/count": {
+      "get": {
+        "description": "Возвращает количество жалоб по статусам",
+        "operationId": "getReportsCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Статистика успешно получена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pending": {
+                      "type": "number",
+                      "example": 5,
+                      "description": "Количество ожидающих жалоб"
+                    },
+                    "resolved": {
+                      "type": "number",
+                      "example": 10,
+                      "description": "Количество рассмотренных жалоб"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить статистику по жалобам (только для админов/модераторов)",
+        "tags": ["Reports"]
+      }
+    },
+    "/stickers/packs": {
+      "get": {
+        "description": "Возвращает список всех доступных наборов стикеров",
+        "operationId": "getAllPacks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список наборов стикеров успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StickerPackListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить все активные наборы стикеров",
+        "tags": ["Stickers"]
+      }
+    },
+    "/stickers/packs/{id}": {
+      "get": {
+        "description": "Возвращает подробную информацию о наборе стикеров",
+        "operationId": "getPackById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID набора стикеров",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Набор стикеров успешно получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StickerPackResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Набор стикеров не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить набор стикеров по ID",
+        "tags": ["Stickers"]
+      }
+    },
+    "/stickers/search": {
+      "get": {
+        "description": "Ищет стикеры по названию",
+        "operationId": "searchStickers",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Поисковый запрос",
+            "schema": { "example": "улыбка", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Результаты поиска успешно получены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/StickerResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Поиск стикеров",
+        "tags": ["Stickers"]
+      }
+    },
+    "/stickers/{id}": {
+      "get": {
+        "description": "Возвращает информацию о конкретном стикере",
+        "operationId": "getStickerById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID стикера",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стикер успешно получен",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StickerResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Стикер не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить стикер по ID",
+        "tags": ["Stickers"]
+      }
+    },
+    "/stickers/by-sticker-id/{stickerId}": {
+      "get": {
+        "description": "Возвращает информацию о стикере по его внутреннему идентификатору",
+        "operationId": "getStickerByStickerId",
+        "parameters": [
+          {
+            "name": "stickerId",
+            "required": true,
+            "in": "path",
+            "description": "Внутренний ID стикера",
+            "schema": { "example": "sticker_123", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стикер успешно получен",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StickerResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Стикер не найден" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Получить стикер по stickerId",
+        "tags": ["Stickers"]
+      }
+    },
+    "/admin/stickers/packs": {
+      "post": {
+        "operationId": "createPack",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateStickerPackDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StickerPackResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Создать набор стикеров (только для админов)",
+        "tags": ["Stickers Admin"]
+      }
+    },
+    "/admin/stickers/stickers": {
+      "post": {
+        "operationId": "createSticker",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stickerId": { "type": "string", "example": "sticker_123" },
+                  "name": { "type": "string", "example": "Улыбка" },
+                  "order": { "type": "number", "example": 1 },
+                  "packId": { "type": "string", "example": "uuid" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StickerResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Создать стикер (только для админов)",
+        "tags": ["Stickers Admin"]
+      }
+    },
+    "/admin/stickers/stickers/{id}": {
+      "delete": {
+        "operationId": "deleteSticker",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID стикера",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Стикер успешно удален" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Удалить стикер (только для админов)",
+        "tags": ["Stickers Admin"]
+      }
+    }
+  },
+  "info": {
+    "title": "Описание API",
+    "description": "Nirvana_2025",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "CreateUserInfoDto": {
+        "type": "object",
+        "properties": {
+          "zodiacSign": {
+            "type": "string",
+            "enum": [
+              "ARIES",
+              "TAURUS",
+              "GEMINI",
+              "CANCER",
+              "LEO",
+              "VIRGO",
+              "LIBRA",
+              "SCORPIO",
+              "SAGITTARIUS",
+              "CAPRICORN",
+              "AQUARIUS",
+              "PISCES",
+              "NONE"
+            ],
+            "description": "Знак зодиака"
+          },
+          "desiredPartnerAgeMin": {
+            "type": "number",
+            "example": 18,
+            "description": "Минимальный возраст партнера",
+            "minimum": 18
+          },
+          "desiredPartnerAgeMax": {
+            "type": "number",
+            "example": 30,
+            "description": "Максимальный возраст партнера",
+            "maximum": 100
+          },
+          "desiredPartnerGender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "description": "Желаемый пол партнера"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "CoolNick",
+            "description": "Никнейм"
+          },
+          "aboutMe": {
+            "type": "string",
+            "example": "Привет! Я люблю путешествия и программирование.",
+            "description": "Информация о себе (макс. 300 символов)",
+            "maxLength": 300
+          },
+          "cityId": {
+            "type": "string",
+            "example": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8",
+            "description": "ID города"
+          }
+        }
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "Email пользователя"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123",
+            "description": "Пароль",
+            "minLength": 6
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Иван",
+            "description": "Имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Иванов",
+            "description": "Фамилия пользователя"
+          },
+          "middleName": {
+            "type": "string",
+            "example": "Иванович",
+            "description": "Отчество пользователя"
+          },
+          "dateBirthday": {
+            "type": "string",
+            "example": "1990-01-01",
+            "description": "Дата рождения"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "example": "MALE",
+            "description": "Пол пользователя"
+          },
+          "info": {
+            "description": "Дополнительная информация о пользователе",
+            "allOf": [{ "$ref": "#/components/schemas/CreateUserInfoDto" }]
+          }
+        },
+        "required": ["email", "password", "firstName", "gender"]
+      },
+      "UserPhotoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "smallUrl": {
+            "type": "string",
+            "example": "https://storage.com/small.jpg"
+          },
+          "middleUrl": {
+            "type": "string",
+            "example": "https://storage.com/middle.jpg"
+          },
+          "largeUrl": {
+            "type": "string",
+            "example": "https://storage.com/large.jpg"
+          },
+          "bigUrl": {
+            "type": "string",
+            "example": "https://storage.com/big.jpg"
+          },
+          "mobileUrl": {
+            "type": "string",
+            "example": "https://storage.com/mobile.jpg"
+          },
+          "hdUrl": {
+            "type": "string",
+            "example": "https://storage.com/hd.jpg"
+          },
+          "originUrl": {
+            "type": "string",
+            "example": "https://storage.com/origin.jpg"
+          },
+          "isMain": { "type": "boolean", "example": true },
+          "verified": { "type": "boolean", "example": true },
+          "order": { "type": "number", "example": 1 },
+          "orientation": {
+            "type": "string",
+            "enum": ["PORTRAIT", "LANDSCAPE", "SQUARE"],
+            "example": "PORTRAIT"
+          }
+        },
+        "required": [
+          "id",
+          "smallUrl",
+          "middleUrl",
+          "largeUrl",
+          "bigUrl",
+          "mobileUrl",
+          "hdUrl",
+          "originUrl",
+          "isMain",
+          "verified",
+          "order",
+          "orientation"
+        ]
+      },
+      "UserInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "zodiacSign": {
+            "type": "string",
+            "enum": [
+              "ARIES",
+              "TAURUS",
+              "GEMINI",
+              "CANCER",
+              "LEO",
+              "VIRGO",
+              "LIBRA",
+              "SCORPIO",
+              "SAGITTARIUS",
+              "CAPRICORN",
+              "AQUARIUS",
+              "PISCES",
+              "NONE"
+            ],
+            "description": "Знак зодиака"
+          },
+          "desiredPartnerAgeMin": {
+            "type": "number",
+            "example": 18,
+            "description": "Минимальный возраст партнера"
+          },
+          "desiredPartnerAgeMax": {
+            "type": "number",
+            "example": 30,
+            "description": "Максимальный возраст партнера"
+          },
+          "desiredPartnerGender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "description": "Желаемый пол партнера"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "CoolNick",
+            "description": "Никнейм"
+          },
+          "aboutMe": {
+            "type": "string",
+            "example": "Люблю активный отдых и читать книги.",
+            "description": "Информация о себе"
+          },
+          "age": { "type": "number", "example": 18, "description": "Возраст" },
+          "cityId": {
+            "type": "string",
+            "example": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8",
+            "description": "ID города"
+          }
+        }
+      },
+      "UserGroupResponseDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "MODERATOR",
+              "ADMIN",
+              "CONTENT_MANAGER",
+              "SUPPORT"
+            ],
+            "example": "USER",
+            "description": "Роль пользователя"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата создания"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата обновления"
+          }
+        },
+        "required": ["role", "createdAt", "updatedAt"]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID пользователя"
+          },
+          "login": {
+            "type": "string",
+            "example": "ivan",
+            "description": "Логин пользователя"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "Email пользователя"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Иван",
+            "description": "Имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Иванов",
+            "description": "Фамилия пользователя"
+          },
+          "middleName": {
+            "type": "string",
+            "example": "Иванович",
+            "description": "Отчество пользователя"
+          },
+          "dateBirthday": {
+            "type": "string",
+            "example": "1990-01-01",
+            "description": "Дата рождения"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "example": "MALE",
+            "description": "Пол пользователя"
+          },
+          "isEmailVerified": {
+            "type": "boolean",
+            "example": true,
+            "description": "Подтвержден ли email"
+          },
+          "mainPhoto": {
+            "description": "Основное фото пользователя",
+            "allOf": [{ "$ref": "#/components/schemas/UserPhotoResponseDto" }]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата создания"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата обновления"
+          },
+          "lastLoginAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Последний вход"
+          },
+          "isOnline": {
+            "type": "boolean",
+            "example": true,
+            "description": "Онлайн ли пользователь"
+          },
+          "lastSeen": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Когда пользователь был последний раз онлайн"
+          },
+          "info": {
+            "description": "Дополнительная информация",
+            "allOf": [{ "$ref": "#/components/schemas/UserInfoResponseDto" }]
+          },
+          "groups": {
+            "description": "Группы пользователя",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UserGroupResponseDto" }
+          },
+          "totalPhotos": {
+            "type": "number",
+            "example": 5,
+            "description": "Общее количество фото пользователя"
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "email",
+          "firstName",
+          "gender",
+          "isEmailVerified",
+          "createdAt",
+          "updatedAt",
+          "isOnline",
+          "totalPhotos"
+        ]
+      },
+      "SimpleUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID пользователя"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Иван",
+            "description": "Имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Иванов",
+            "description": "Фамилия пользователя"
+          },
+          "middleName": {
+            "type": "string",
+            "example": "Иванович",
+            "description": "Отчество пользователя"
+          },
+          "dateBirthday": {
+            "type": "string",
+            "example": "1990-01-01",
+            "description": "Дата рождения"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "example": "MALE",
+            "description": "Пол пользователя"
+          },
+          "mainPhoto": {
+            "description": "Основное фото пользователя",
+            "allOf": [{ "$ref": "#/components/schemas/UserPhotoResponseDto" }]
+          },
+          "info": {
+            "description": "Дополнительная информация",
+            "allOf": [{ "$ref": "#/components/schemas/UserInfoResponseDto" }]
+          },
+          "totalPhotos": {
+            "type": "number",
+            "example": 5,
+            "description": "Общее количество фото пользователя"
+          },
+          "isOnline": {
+            "type": "boolean",
+            "example": true,
+            "description": "Онлайн ли пользователь"
+          },
+          "lastSeen": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Когда пользователь был последний раз онлайн"
+          }
+        },
+        "required": ["id", "firstName", "gender", "totalPhotos", "isOnline"]
+      },
+      "PaginatedSimpleUsersResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Массив элементов",
+            "items": { "$ref": "#/components/schemas/SimpleUserResponseDto" },
+            "type": "array"
+          },
+          "count": {
+            "type": "number",
+            "example": 100,
+            "description": "Общее количество элементов"
+          },
+          "page": {
+            "type": "number",
+            "example": 1,
+            "description": "Текущая страница"
+          },
+          "limit": {
+            "type": "number",
+            "example": 10,
+            "description": "Количество элементов на странице"
+          }
+        },
+        "required": ["data", "count", "page", "limit"]
+      },
+      "UpdateUserInfoDto": {
+        "type": "object",
+        "properties": {
+          "zodiacSign": {
+            "type": "string",
+            "enum": [
+              "ARIES",
+              "TAURUS",
+              "GEMINI",
+              "CANCER",
+              "LEO",
+              "VIRGO",
+              "LIBRA",
+              "SCORPIO",
+              "SAGITTARIUS",
+              "CAPRICORN",
+              "AQUARIUS",
+              "PISCES",
+              "NONE"
+            ],
+            "description": "Знак зодиака"
+          },
+          "desiredPartnerAgeMin": {
+            "type": "number",
+            "example": 18,
+            "description": "Минимальный возраст партнера",
+            "minimum": 18
+          },
+          "desiredPartnerAgeMax": {
+            "type": "number",
+            "example": 30,
+            "description": "Максимальный возраст партнера",
+            "maximum": 100
+          },
+          "desiredPartnerGender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "description": "Желаемый пол партнера"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "CoolNick",
+            "description": "Никнейм"
+          },
+          "aboutMe": {
+            "type": "string",
+            "example": "Привет! Я люблю путешествия и программирование.",
+            "description": "Информация о себе (макс. 300 символов)",
+            "maxLength": 300
+          },
+          "cityId": {
+            "type": "string",
+            "example": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8",
+            "description": "ID города"
+          }
+        }
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Иван",
+            "description": "Имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Иванов",
+            "description": "Фамилия пользователя"
+          },
+          "middleName": {
+            "type": "string",
+            "example": "Иванович",
+            "description": "Отчество пользователя"
+          },
+          "dateBirthday": {
+            "type": "string",
+            "example": "1990-01-01",
+            "description": "Дата рождения"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "OTHER"],
+            "description": "Пол пользователя"
+          },
+          "info": {
+            "description": "Дополнительная информация о пользователе",
+            "allOf": [{ "$ref": "#/components/schemas/UpdateUserInfoDto" }]
+          }
+        }
+      },
+      "CreateGroupDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "MODERATOR",
+              "ADMIN",
+              "CONTENT_MANAGER",
+              "SUPPORT"
+            ],
+            "example": "ADMIN",
+            "description": "Роль пользователя"
+          }
+        },
+        "required": ["role"]
+      },
+      "GroupResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID группы"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "MODERATOR",
+              "ADMIN",
+              "CONTENT_MANAGER",
+              "SUPPORT"
+            ],
+            "example": "USER",
+            "description": "Роль пользователя"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата создания"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Дата обновления"
+          }
+        },
+        "required": ["id", "role", "createdAt", "updatedAt"]
+      },
+      "NewFacesResponseDto": {
+        "type": "object",
+        "properties": {
+          "female": {
+            "description": "Последние зарегистрированные женщины",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SimpleUserResponseDto" }
+          },
+          "male": {
+            "description": "Последние зарегистрированные мужчины",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SimpleUserResponseDto" }
+          }
+        },
+        "required": ["female", "male"]
+      },
+      "UploadPhotosResponseDto": {
+        "type": "object",
+        "properties": {
+          "photos": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UserPhotoResponseDto" }
+          }
+        },
+        "required": ["photos"]
+      },
+      "DeletePhotosDto": {
+        "type": "object",
+        "properties": {
+          "photoIds": {
+            "example": ["a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"],
+            "description": "Array of photo IDs to delete",
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["photoIds"]
+      },
+      "PhotosOrderDto": {
+        "type": "object",
+        "properties": {
+          "orderedPhotoIds": {
+            "example": ["a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"],
+            "description": "Array of photo IDs to delete",
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["orderedPhotoIds"]
+      },
+      "AuthLoginDto": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "description": "Логин или email пользователя",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль пользователя",
+            "minLength": 6,
+            "example": "strongPassword123"
+          }
+        },
+        "required": ["login", "password"]
+      },
+      "AuthLoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access token для аутентификации"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token для обновления access token"
+          }
+        },
+        "required": ["accessToken", "refreshToken"]
+      },
+      "LogoutResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Флаг успешного выхода"
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully logged out",
+            "description": "Сообщение о результате"
+          }
+        },
+        "required": ["success", "message"]
+      },
+      "CreateChatDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID пользователя, с которым создать чат"
+          }
+        },
+        "required": ["userId"]
+      },
+      "ChatResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "user": { "$ref": "#/components/schemas/SimpleUserResponseDto" },
+          "recipientId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "ID получателя сообщений (собеседника)"
+          },
+          "isBlocked": { "type": "boolean", "example": false },
+          "blockedBy": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "ID пользователя, который заблокировал чат"
+          },
+          "deletedByMe": {
+            "type": "boolean",
+            "example": false,
+            "description": "Признак что беседа удалена текущим пользователем"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "unreadCount": {
+            "type": "number",
+            "example": 5,
+            "description": "Количество непрочитанных сообщений в чате"
+          }
+        },
+        "required": [
+          "id",
+          "user",
+          "recipientId",
+          "isBlocked",
+          "deletedByMe",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ChatListResponseDto": {
+        "type": "object",
+        "properties": {
+          "chats": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ChatResponseDto" }
+          },
+          "total": { "type": "number", "example": 10 },
+          "page": { "type": "number", "example": 1 },
+          "limit": { "type": "number", "example": 20 }
+        },
+        "required": ["chats", "total", "page", "limit"]
+      },
+      "DeleteChatResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Чат успешно удален" }
+        },
+        "required": ["success", "message"]
+      },
+      "CreateMessageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "Привет! Как дела?",
+            "description": "Текст сообщения"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["TEXT", "STICKER"],
+            "example": "TEXT",
+            "description": "Тип сообщения"
+          },
+          "stickerId": {
+            "type": "string",
+            "example": "sticker_123",
+            "description": "ID стикера (если type=STICKER)"
+          }
+        },
+        "required": ["type"]
+      },
+      "MessageResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "chat": { "type": "object" },
+          "author": { "$ref": "#/components/schemas/SimpleUserResponseDto" },
+          "content": { "type": "string", "example": "Привет! Как дела?" },
+          "type": {
+            "type": "string",
+            "enum": ["TEXT", "STICKER"],
+            "example": "TEXT"
+          },
+          "stickerId": { "type": "string", "example": "sticker_123" },
+          "reaction": { "type": "string", "example": "👍" },
+          "isRead": { "type": "boolean", "example": false },
+          "isEdited": { "type": "boolean", "example": false },
+          "isDeleted": { "type": "boolean", "example": false },
+          "needsModeration": { "type": "boolean", "example": false },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "chat",
+          "author",
+          "type",
+          "isRead",
+          "isEdited",
+          "isDeleted",
+          "needsModeration",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "MessageListResponseDto": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MessageResponseDto" }
+          },
+          "total": { "type": "number", "example": 100 },
+          "page": { "type": "number", "example": 1 },
+          "limit": { "type": "number", "example": 20 }
+        },
+        "required": ["messages", "total", "page", "limit"]
+      },
+      "UpdateMessageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "Привет! Как твои дела?",
+            "description": "Новый текст сообщения"
+          }
+        },
+        "required": ["content"]
+      },
+      "MarkAsReadResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": {
+            "type": "string",
+            "example": "Сообщение отмечено как прочитанное"
+          }
+        },
+        "required": ["success", "message"]
+      },
+      "MessageReactionDto": {
+        "type": "object",
+        "properties": {
+          "reaction": {
+            "type": "string",
+            "example": "👍",
+            "description": "Реакция (эмодзи)"
+          }
+        },
+        "required": ["reaction"]
+      },
+      "ChatUnreadDto": {
+        "type": "object",
+        "properties": {
+          "chatId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID чата"
+          },
+          "count": {
+            "type": "number",
+            "example": 5,
+            "description": "Количество непрочитанных сообщений в чате"
+          },
+          "lastMessagePreview": {
+            "type": "string",
+            "example": "Привет! Как дела?",
+            "description": "Текст последнего непрочитанного сообщения"
+          },
+          "lastMessageTime": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Время последнего непрочитанного сообщения"
+          }
+        },
+        "required": ["chatId", "count"]
+      },
+      "UnreadCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "example": 15,
+            "description": "Общее количество непрочитанных сообщений"
+          },
+          "chats": {
+            "description": "Список чатов с непрочитанными сообщениями",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ChatUnreadDto" }
+          }
+        },
+        "required": ["total", "chats"]
+      },
+      "UnreadResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "$ref": "#/components/schemas/UnreadCountsDto" }
+        },
+        "required": ["success", "data"]
+      },
+      "CreateBlockDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID пользователя для блокировки"
+          }
+        },
+        "required": ["userId"]
+      },
+      "BlockResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "blocker": { "type": "object" },
+          "blocked": { "type": "object" },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": ["id", "blocker", "blocked", "createdAt"]
+      },
+      "UnblockResponseMessageDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": {
+            "type": "string",
+            "example": "Пользователь успешно разблокирован"
+          }
+        },
+        "required": ["success", "message"]
+      },
+      "BlockListResponseDto": {
+        "type": "object",
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BlockResponseDto" }
+          },
+          "total": { "type": "number", "example": 5 }
+        },
+        "required": ["blocks", "total"]
+      },
+      "BlockedUsersResponseDto": {
+        "type": "object",
+        "properties": {
+          "users": { "type": "array", "items": { "type": "object" } },
+          "total": { "type": "number", "example": 5 }
+        },
+        "required": ["users", "total"]
+      },
+      "BlockStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "isBlockedByMe": { "type": "boolean", "example": false },
+          "isBlockedByThem": { "type": "boolean", "example": true },
+          "mutualBlock": { "type": "boolean", "example": false }
+        },
+        "required": ["isBlockedByMe", "isBlockedByThem", "mutualBlock"]
+      },
+      "DeleteAllBlocksResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": {
+            "type": "string",
+            "example": "Все блокировки успешно удалены"
+          }
+        },
+        "required": ["success", "message"]
+      },
+      "CityResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID города"
+          },
+          "label": {
+            "type": "string",
+            "example": "Москва",
+            "description": "Название города",
+            "maxLength": 150
+          }
+        },
+        "required": ["id", "label"]
+      },
+      "CityListResponseDto": {
+        "type": "object",
+        "properties": {
+          "cities": {
+            "description": "Массив городов",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CityResponseDto" }
+          }
+        },
+        "required": ["cities"]
+      },
+      "PaginatedCityResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Массив городов",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CityResponseDto" }
+          },
+          "meta": {
+            "type": "object",
+            "description": "Метаданные пагинации",
+            "properties": {
+              "page": {
+                "type": "number",
+                "example": 1,
+                "description": "Текущая страница"
+              },
+              "limit": {
+                "type": "number",
+                "example": 10,
+                "description": "Количество элементов на странице"
+              },
+              "total": {
+                "type": "number",
+                "example": 100,
+                "description": "Общее количество элементов"
+              }
+            }
+          }
+        },
+        "required": ["data", "meta"]
+      },
+      "CreateCityDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Москва",
+            "description": "Название города",
+            "minLength": 1,
+            "maxLength": 150
+          }
+        },
+        "required": ["label"]
+      },
+      "UpdateCityDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Санкт-Петербург",
+            "description": "Новое название города",
+            "minLength": 1,
+            "maxLength": 150
+          }
+        }
+      },
+      "DeleteCityResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "City deleted successfully",
+            "description": "Сообщение об успешном удалении"
+          }
+        },
+        "required": ["message"]
+      },
+      "CreateReportDto": {
+        "type": "object",
+        "properties": {
+          "reportedUserId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID пользователя, на которого подается жалоба"
+          },
+          "messageId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+            "description": "UUID сообщения (если жалоба на конкретное сообщение)"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["SPAM", "HARASSMENT"],
+            "example": "SPAM"
+          },
+          "description": {
+            "type": "string",
+            "example": "Пользователь постоянно отправляет рекламные сообщения",
+            "description": "Подробное описание жалобы"
+          }
+        },
+        "required": ["reportedUserId", "reason"]
+      },
+      "ReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "reporter": { "type": "object" },
+          "reportedUser": { "type": "object" },
+          "messageId": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["SPAM", "HARASSMENT"],
+            "example": "SPAM"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "RESOLVED"],
+            "example": "PENDING"
+          },
+          "description": {
+            "type": "string",
+            "example": "Пользователь отправляет спам-сообщения"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "reporter",
+          "reportedUser",
+          "reason",
+          "status",
+          "createdAt"
+        ]
+      },
+      "ReportListResponseDto": {
+        "type": "object",
+        "properties": {
+          "reports": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReportResponseDto" }
+          },
+          "total": { "type": "number", "example": 25 },
+          "page": { "type": "number", "example": 1 },
+          "limit": { "type": "number", "example": 20 }
+        },
+        "required": ["reports", "total", "page", "limit"]
+      },
+      "ResolveReportDto": {
+        "type": "object",
+        "properties": {
+          "resolutionComment": {
+            "type": "string",
+            "example": "Жалоба рассмотрена и закрыта"
+          }
+        },
+        "required": ["resolutionComment"]
+      },
+      "DeleteReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Жалоба успешно удалена" }
+        },
+        "required": ["success", "message"]
+      },
+      "StickerResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "stickerId": { "type": "string", "example": "sticker_123" },
+          "name": { "type": "string", "example": "Улыбка" },
+          "smallUrl": {
+            "type": "string",
+            "example": "https://storage.com/sticker_small.webp"
+          },
+          "middleUrl": {
+            "type": "string",
+            "example": "https://storage.com/sticker_middle.webp"
+          },
+          "largeUrl": {
+            "type": "string",
+            "example": "https://storage.com/sticker_large.webp"
+          },
+          "originUrl": {
+            "type": "string",
+            "example": "https://storage.com/sticker_origin.webp"
+          },
+          "order": { "type": "number", "example": 1 },
+          "pack": { "$ref": "#/components/schemas/StickerPackResponseDto" },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "stickerId",
+          "name",
+          "smallUrl",
+          "middleUrl",
+          "largeUrl",
+          "originUrl",
+          "order",
+          "pack",
+          "createdAt"
+        ]
+      },
+      "StickerPackResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+          },
+          "name": { "type": "string", "example": "Веселые эмоции" },
+          "description": {
+            "type": "string",
+            "example": "Набор веселых эмоций и реакций"
+          },
+          "previewUrl": {
+            "type": "string",
+            "example": "https://example.com/preview.jpg"
+          },
+          "isActive": { "type": "boolean", "example": true },
+          "stickers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StickerResponseDto" }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": ["id", "name", "isActive", "stickers", "createdAt"]
+      },
+      "StickerPackListResponseDto": {
+        "type": "object",
+        "properties": {
+          "packs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StickerPackResponseDto" }
+          },
+          "total": { "type": "number", "example": 10 }
+        },
+        "required": ["packs", "total"]
+      },
+      "CreateStickerPackDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Веселые эмоции" },
+          "description": {
+            "type": "string",
+            "example": "Набор веселых эмоций и реакций"
+          },
+          "previewUrl": {
+            "type": "string",
+            "example": "https://example.com/preview.jpg"
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  }
+}
