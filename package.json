@@ -1,6 +1,7 @@
 {
   "name": "aak-swagger-typescript-api",
-  "version": "17.0.3",
+  "version": "17.0.5",
+  "description": "aak-swagger-typescript-api",
   "repository": "github:Azirafel17/swagger-typescript-api",
   "license": "MIT",
   "author": "Sergey Volkov <js2me@outlook.com>",

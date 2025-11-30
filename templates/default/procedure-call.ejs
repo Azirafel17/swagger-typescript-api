@@ -59,15 +59,17 @@ const hasPathParams = pathParams.length > 0;
 const hasPayload = !!payload;
 %>
 
-<%= route.routeName.usage %>: (
-  <% if (hasPathParams) { %><%= pathParams.map(p => p.name).join(', ') %><% } %>
-  <% if (hasPathParams && hasPayload) { %>, <% } %>
-  <% if (hasPayload) { %><%= payload.name %><% } %>
-): Promise<<%= type %>> =>
-  $<%= method %><<%= type %>>(`<%= path %>`, {
-    <% if (hasPayload) { %>data: <%= payload.name %>,<% } %>
-    isBearer: <%= security ? 'true' : 'false' %>
-  }),
+<%~ route.routeName.usage %><%~ route.namespace ? ': ' : ' = ' %>
+(<%~ wrapperArgs %>)
+<%~ `: Promise<${type}>` %>
+=>
+<%~ `$${method}` %><<%~ type %>>
+    (`<%~ path %>`,
+    {
+        <%~ bodyTmpl ? `${bodyTmpl},` : '' %>
+        <%~ queryTmpl ? `'params': ${queryTmpl},` : '' %>
+        <%~`isBearer: ${securityTmpl}`%>
+    }),
 
 <%= route.routeName.usage %>Async: (
   <% if (hasPathParams) { %>{ <%= pathParams.map(p => p.name).join(', ') %> }<% } %>

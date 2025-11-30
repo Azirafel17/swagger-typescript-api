@@ -1283,9 +1283,12 @@ export class Api {
      * @secure
      * @response `201` `GroupResponseDto`*/
 
-    createGroup: (userId, data): Promise<GroupResponseDto> =>
+    createGroup: (
+      { userId, ...query }: CreateGroupParams,
+      data: CreateGroupDto,
+    ): Promise<GroupResponseDto> =>
       $post<GroupResponseDto>(`/users/${userId}/groups`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1306,7 +1309,11 @@ export class Api {
      * @secure
      * @response `204` `void`*/
 
-    deleteGroup: (userId, groupId): Promise<void> =>
+    deleteGroup: ({
+      userId,
+      groupId,
+      ...query
+    }: DeleteGroupParams): Promise<void> =>
       $delete<void>(`/users/${userId}/groups/${groupId}`, {
         isBearer: true,
       }),
@@ -1327,9 +1334,9 @@ export class Api {
      * @response `400` `void` Некорректный запрос
      * @response `404` `void` Фото не найдены*/
 
-    deletePhotos: (data): Promise<void> =>
+    deletePhotos: (data: DeletePhotosDto): Promise<void> =>
       $delete<void>(`/users/photos`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1346,7 +1353,7 @@ export class Api {
      * @request GET:/users/{id}
      * @response `200` `UserResponseDto`*/
 
-    getById: (id): Promise<UserResponseDto> =>
+    getById: ({ id, ...query }: GetByIdParams): Promise<UserResponseDto> =>
       $get<UserResponseDto>(`/users/${id}`, {
         isBearer: false,
       }),
@@ -1366,7 +1373,10 @@ export class Api {
      * @response `400` `void` Неверный формат никнейма
      * @response `404` `void` Пользователь с таким никнеймом не найден*/
 
-    getByNickname: (nickname): Promise<UserResponseDto> =>
+    getByNickname: ({
+      nickname,
+      ...query
+    }: GetByNicknameParams): Promise<UserResponseDto> =>
       $get<UserResponseDto>(`/users/by-nickname/${nickname}`, {
         isBearer: false,
       }),
@@ -1423,7 +1433,10 @@ export class Api {
      * @request GET:/users/photos/{userId}
      * @response `200` `(UserPhotoResponseDto)[]`*/
 
-    getPhotos: (userId): Promise<UserPhotoResponseDto[]> =>
+    getPhotos: ({
+      userId,
+      ...query
+    }: GetPhotosParams): Promise<UserPhotoResponseDto[]> =>
       $get<UserPhotoResponseDto[]>(`/users/photos/${userId}`, {
         isBearer: false,
       }),
@@ -1470,7 +1483,10 @@ export class Api {
      * @secure
      * @response `200` `(GroupResponseDto)[]`*/
 
-    getUserGroups: (userId): Promise<GroupResponseDto[]> =>
+    getUserGroups: ({
+      userId,
+      ...query
+    }: GetUserGroupsParams): Promise<GroupResponseDto[]> =>
       $get<GroupResponseDto[]>(`/users/${userId}/groups`, {
         isBearer: true,
       }),
@@ -1491,8 +1507,11 @@ export class Api {
      * @request GET:/users
      * @response `200` `PaginatedSimpleUsersResponseDto` Пагинированный список пользователей*/
 
-    getUsers: (): Promise<PaginatedSimpleUsersResponseDto> =>
+    getUsers: (
+      query: GetUsersParams,
+    ): Promise<PaginatedSimpleUsersResponseDto> =>
       $get<PaginatedSimpleUsersResponseDto>(`/users`, {
+        params: query,
         isBearer: false,
       }),
 
@@ -1511,9 +1530,9 @@ export class Api {
      * @request POST:/users/register
      * @response `201` `UserResponseDto`*/
 
-    register: (data): Promise<UserResponseDto> =>
+    register: (data: CreateUserDto): Promise<UserResponseDto> =>
       $post<UserResponseDto>(`/users/register`, {
-        data: data,
+        data,
         isBearer: false,
       }),
 
@@ -1531,9 +1550,12 @@ export class Api {
      * @secure
      * @response `200` `UserResponseDto`*/
 
-    update: (id, data): Promise<UserResponseDto> =>
+    update: (
+      { id, ...query }: UpdateParams,
+      data: UpdateUserDto,
+    ): Promise<UserResponseDto> =>
       $put<UserResponseDto>(`/users/${id}`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1551,9 +1573,9 @@ export class Api {
      * @secure
      * @response `200` `UserResponseDto`*/
 
-    updateCurrentUser: (data): Promise<UserResponseDto> =>
+    updateCurrentUser: (data: UpdateUserDto): Promise<UserResponseDto> =>
       $put<UserResponseDto>(`/users/update`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1571,7 +1593,11 @@ export class Api {
      * @secure
      * @response `200` `GroupResponseDto`*/
 
-    updateGroup: (userId, groupId): Promise<GroupResponseDto> =>
+    updateGroup: ({
+      userId,
+      groupId,
+      ...query
+    }: UpdateGroupParams): Promise<GroupResponseDto> =>
       $put<GroupResponseDto>(`/users/${userId}/groups/${groupId}`, {
         isBearer: true,
       }),
@@ -1597,9 +1623,11 @@ export class Api {
      * @secure
      * @response `200` `(UserPhotoResponseDto)[]`*/
 
-    updatePhotosOrder: (data): Promise<UserPhotoResponseDto[]> =>
+    updatePhotosOrder: (
+      data: PhotosOrderDto,
+    ): Promise<UserPhotoResponseDto[]> =>
       $put<UserPhotoResponseDto[]>(`/users/photos/order`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1619,9 +1647,12 @@ export class Api {
      * @secure
      * @response `201` `UserPhotoResponseDto` Successfully uploaded main photo*/
 
-    uploadMainPhoto: (data): Promise<UserPhotoResponseDto> =>
+    uploadMainPhoto: (data: {
+      /** @format binary */
+      file?: File;
+    }): Promise<UserPhotoResponseDto> =>
       $post<UserPhotoResponseDto>(`/users/photos/uploadMainPhoto`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1643,9 +1674,11 @@ export class Api {
      * @secure
      * @response `200` `UploadPhotosResponseDto`*/
 
-    uploadPhotos: (data): Promise<UploadPhotosResponseDto> =>
+    uploadPhotos: (data: {
+      files?: File[];
+    }): Promise<UploadPhotosResponseDto> =>
       $post<UploadPhotosResponseDto>(`/users/photos`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1663,7 +1696,10 @@ export class Api {
      * @secure
      * @response `200` `UserPhotoResponseDto`*/
 
-    verifyPhoto: (photoId): Promise<UserPhotoResponseDto> =>
+    verifyPhoto: ({
+      photoId,
+      ...query
+    }: VerifyPhotoParams): Promise<UserPhotoResponseDto> =>
       $patch<UserPhotoResponseDto>(`/users/photos/${photoId}/verify`, {
         isBearer: true,
       }),
@@ -1691,9 +1727,9 @@ export class Api {
      * @response `401` `void` Invalid credentials
      * @response `429` `void` Too many login attempts*/
 
-    login: (data): Promise<AuthLoginResponseDto> =>
+    login: (data: AuthLoginDto): Promise<AuthLoginResponseDto> =>
       $post<AuthLoginResponseDto>(`/auth/login`, {
-        data: data,
+        data,
         isBearer: false,
       }),
 
@@ -1754,11 +1790,14 @@ export class Api {
      * @response `403` `void` Нет доступа к чату
      * @response `404` `void` Сообщение не найдено*/
 
-    addReaction: (messageId, chatId, data): Promise<MessageResponseDto> =>
+    addReaction: (
+      { messageId, chatId, ...query }: AddReactionParams,
+      data: MessageReactionDto,
+    ): Promise<MessageResponseDto> =>
       $put<MessageResponseDto>(
         `/chats/${chatId}/messages/${messageId}/reaction`,
         {
-          data: data,
+          data,
           isBearer: true,
         },
       ),
@@ -1787,7 +1826,7 @@ export class Api {
      * @response `403` `void` Пользователь заблокирован
      * @response `404` `void` Пользователь не найден*/
 
-    blockChat: (id): Promise<void> =>
+    blockChat: ({ id, ...query }: BlockChatParams): Promise<void> =>
       $put<void>(`/chats/${id}/block`, {
         isBearer: true,
       }),
@@ -1809,9 +1848,9 @@ export class Api {
      * @response `403` `void` Пользователь заблокирован
      * @response `404` `void` Пользователь не найден*/
 
-    createChat: (data): Promise<ChatResponseDto> =>
+    createChat: (data: CreateChatDto): Promise<ChatResponseDto> =>
       $post<ChatResponseDto>(`/chats`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1832,9 +1871,12 @@ export class Api {
      * @response `403` `void` Чат заблокирован или нет доступа
      * @response `404` `void` Чат не найден*/
 
-    createMessage: (chatId, data): Promise<MessageResponseDto> =>
+    createMessage: (
+      { chatId, ...query }: CreateMessageParams,
+      data: CreateMessageDto,
+    ): Promise<MessageResponseDto> =>
       $post<MessageResponseDto>(`/chats/${chatId}/messages`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -1856,7 +1898,10 @@ export class Api {
      * @response `200` `DeleteChatResponseDto` Чат успешно удален
      * @response `404` `void` Чат не найден*/
 
-    deleteChat: (id): Promise<DeleteChatResponseDto> =>
+    deleteChat: ({
+      id,
+      ...query
+    }: DeleteChatParams): Promise<DeleteChatResponseDto> =>
       $delete<DeleteChatResponseDto>(`/chats/${id}`, {
         isBearer: true,
       }),
@@ -1881,7 +1926,11 @@ export class Api {
      * @response `403` `void` Нет прав на удаление
      * @response `404` `void` Сообщение не найдено*/
 
-    deleteMessage: (messageId, chatId): Promise<void> =>
+    deleteMessage: ({
+      messageId,
+      chatId,
+      ...query
+    }: DeleteMessageParams): Promise<void> =>
       $delete<void>(`/chats/${chatId}/messages/${messageId}`, {
         isBearer: true,
       }),
@@ -1904,7 +1953,7 @@ export class Api {
      * @response `200` `ChatResponseDto` Информация о чате успешно получена
      * @response `404` `void` Чат не найден*/
 
-    getChat: (id): Promise<ChatResponseDto> =>
+    getChat: ({ id, ...query }: GetChatParams): Promise<ChatResponseDto> =>
       $get<ChatResponseDto>(`/chats/${id}`, {
         isBearer: true,
       }),
@@ -1924,8 +1973,12 @@ export class Api {
      * @response `200` `MessageListResponseDto` История сообщений успешно получена
      * @response `404` `void` Чат не найден*/
 
-    getChatMessages: (chatId): Promise<MessageListResponseDto> =>
+    getChatMessages: ({
+      chatId,
+      ...query
+    }: GetChatMessagesParams): Promise<MessageListResponseDto> =>
       $get<MessageListResponseDto>(`/chats/${chatId}/messages`, {
+        params: query,
         isBearer: true,
       }),
 
@@ -1988,8 +2041,9 @@ export class Api {
      * @secure
      * @response `200` `ChatListResponseDto` Список чатов успешно получен*/
 
-    getUserChats: (): Promise<ChatListResponseDto> =>
+    getUserChats: (query: GetUserChatsParams): Promise<ChatListResponseDto> =>
       $get<ChatListResponseDto>(`/chats`, {
+        params: query,
         isBearer: true,
       }),
 
@@ -2009,7 +2063,11 @@ export class Api {
      * @response `400` `void` Нельзя отметить свое сообщение как прочитанное
      * @response `404` `void` Сообщение не найдено*/
 
-    markAsRead: (messageId, chatId): Promise<MarkAsReadResponseDto> =>
+    markAsRead: ({
+      messageId,
+      chatId,
+      ...query
+    }: MarkAsReadParams): Promise<MarkAsReadResponseDto> =>
       $post<MarkAsReadResponseDto>(
         `/chats/${chatId}/messages/${messageId}/read`,
         {
@@ -2041,7 +2099,7 @@ export class Api {
      * @response `403` `void` Пользователь заблокирован
      * @response `404` `void` Пользователь не найден*/
 
-    unBlockChat: (id): Promise<void> =>
+    unBlockChat: ({ id, ...query }: UnBlockChatParams): Promise<void> =>
       $put<void>(`/chats/${id}/unblock`, {
         isBearer: true,
       }),
@@ -2063,9 +2121,12 @@ export class Api {
      * @response `403` `void` Нет прав на редактирование
      * @response `404` `void` Сообщение не найдено*/
 
-    updateMessage: (messageId, chatId, data): Promise<MessageResponseDto> =>
+    updateMessage: (
+      { messageId, chatId, ...query }: UpdateMessageParams,
+      data: UpdateMessageDto,
+    ): Promise<MessageResponseDto> =>
       $put<MessageResponseDto>(`/chats/${chatId}/messages/${messageId}`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2093,9 +2154,9 @@ export class Api {
      * @response `400` `void` Неверные данные запроса
      * @response `404` `void` Пользователь не найден*/
 
-    blockUser: (data): Promise<BlockResponseDto> =>
+    blockUser: (data: CreateBlockDto): Promise<BlockResponseDto> =>
       $post<BlockResponseDto>(`/blocks`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2113,7 +2174,10 @@ export class Api {
      * @secure
      * @response `200` `BlockStatusResponseDto` Статус блокировки успешно получен*/
 
-    checkBlock: (userId): Promise<BlockStatusResponseDto> =>
+    checkBlock: ({
+      userId,
+      ...query
+    }: CheckBlockParams): Promise<BlockStatusResponseDto> =>
       $get<BlockStatusResponseDto>(`/blocks/check/${userId}`, {
         isBearer: true,
       }),
@@ -2182,11 +2246,11 @@ export class Api {
 }` ID пользователей, которые заблокировали меня, успешно получены*/
 
     getBlockedByUsersIds: (): Promise<{
-      /** @example [&quot;uuid1&quot;,&quot;uuid2&quot;] */
+      /** @example ["uuid1","uuid2"] */
       userIds?: string[];
     }> =>
       $get<{
-        /** @example [&quot;uuid1&quot;,&quot;uuid2&quot;] */
+        /** @example ["uuid1","uuid2"] */
         userIds?: string[];
       }>(`/blocks/ids/blocked-by`, {
         isBearer: true,
@@ -2240,11 +2304,11 @@ export class Api {
 }` ID заблокированных пользователей успешно получены*/
 
     getBlockedUsersIds: (): Promise<{
-      /** @example [&quot;uuid1&quot;,&quot;uuid2&quot;] */
+      /** @example ["uuid1","uuid2"] */
       userIds?: string[];
     }> =>
       $get<{
-        /** @example [&quot;uuid1&quot;,&quot;uuid2&quot;] */
+        /** @example ["uuid1","uuid2"] */
         userIds?: string[];
       }>(`/blocks/ids/blocked`, {
         isBearer: true,
@@ -2311,7 +2375,10 @@ export class Api {
      * @response `200` `UnblockResponseMessageDto` Пользователь успешно разблокирован
      * @response `404` `void` Блокировка не найдена*/
 
-    unblockUser: (userId): Promise<UnblockResponseMessageDto> =>
+    unblockUser: ({
+      userId,
+      ...query
+    }: UnblockUserParams): Promise<UnblockResponseMessageDto> =>
       $delete<UnblockResponseMessageDto>(`/blocks/${userId}`, {
         isBearer: true,
       }),
@@ -2372,9 +2439,9 @@ export class Api {
      * @secure
      * @response `200` `CityResponseDto` Successfully created city*/
 
-    create: (data): Promise<CityResponseDto> =>
+    create: (data: CreateCityDto): Promise<CityResponseDto> =>
       $post<CityResponseDto>(`/cities`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2391,7 +2458,7 @@ export class Api {
      * @secure
      * @response `200` `DeleteCityResponseDto` Successfully deleted city*/
 
-    delete: (id): Promise<DeleteCityResponseDto> =>
+    delete: ({ id, ...query }: DeleteParams): Promise<DeleteCityResponseDto> =>
       $delete<DeleteCityResponseDto>(`/cities/${id}`, {
         isBearer: true,
       }),
@@ -2408,8 +2475,9 @@ export class Api {
      * @request GET:/cities
      * @response `200` `PaginatedCityResponseDto` Successfully retrieved paginated list of cities*/
 
-    findAll: (): Promise<PaginatedCityResponseDto> =>
+    findAll: (query: FindAllParams): Promise<PaginatedCityResponseDto> =>
       $get<PaginatedCityResponseDto>(`/cities`, {
+        params: query,
         isBearer: false,
       }),
 
@@ -2425,8 +2493,11 @@ export class Api {
      * @request GET:/cities/all
      * @response `200` `CityListResponseDto` Successfully retrieved list of all cities*/
 
-    findAllWithoutPagination: (): Promise<CityListResponseDto> =>
+    findAllWithoutPagination: (
+      query: FindAllWithoutPaginationParams,
+    ): Promise<CityListResponseDto> =>
       $get<CityListResponseDto>(`/cities/all`, {
+        params: query,
         isBearer: false,
       }),
 
@@ -2444,7 +2515,7 @@ export class Api {
      * @request GET:/cities/{id}
      * @response `200` `CityResponseDto` Successfully retrieved city*/
 
-    findOne: (id): Promise<CityResponseDto> =>
+    findOne: ({ id, ...query }: FindOneParams): Promise<CityResponseDto> =>
       $get<CityResponseDto>(`/cities/${id}`, {
         isBearer: false,
       }),
@@ -2462,9 +2533,12 @@ export class Api {
      * @secure
      * @response `200` `CityResponseDto` Successfully updated city*/
 
-    update: (id, data): Promise<CityResponseDto> =>
+    update: (
+      { id, ...query }: UpdateParams2,
+      data: UpdateCityDto,
+    ): Promise<CityResponseDto> =>
       $put<CityResponseDto>(`/cities/${id}`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2485,9 +2559,9 @@ export class Api {
      * @response `400` `void` Неверные данные запроса
      * @response `404` `void` Пользователь не найден*/
 
-    createReport: (data): Promise<ReportResponseDto> =>
+    createReport: (data: CreateReportDto): Promise<ReportResponseDto> =>
       $post<ReportResponseDto>(`/reports`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2506,7 +2580,10 @@ export class Api {
      * @response `200` `DeleteReportResponseDto` Жалоба успешно удалена
      * @response `404` `void` Жалоба не найдена*/
 
-    deleteReport: (id): Promise<DeleteReportResponseDto> =>
+    deleteReport: ({
+      id,
+      ...query
+    }: DeleteReportParams): Promise<DeleteReportResponseDto> =>
       $delete<DeleteReportResponseDto>(`/reports/${id}`, {
         isBearer: true,
       }),
@@ -2528,8 +2605,9 @@ export class Api {
      * @secure
      * @response `200` `ReportListResponseDto` Список моих жалоб успешно получен*/
 
-    getMyReports: (): Promise<ReportListResponseDto> =>
+    getMyReports: (query: GetMyReportsParams): Promise<ReportListResponseDto> =>
       $get<ReportListResponseDto>(`/reports/my`, {
+        params: query,
         isBearer: true,
       }),
 
@@ -2548,7 +2626,10 @@ export class Api {
      * @response `200` `ReportResponseDto` Информация о жалобе успешно получена
      * @response `404` `void` Жалоба не найдена*/
 
-    getReport: (id): Promise<ReportResponseDto> =>
+    getReport: ({
+      id,
+      ...query
+    }: GetReportParams): Promise<ReportResponseDto> =>
       $get<ReportResponseDto>(`/reports/${id}`, {
         isBearer: true,
       }),
@@ -2567,8 +2648,9 @@ export class Api {
      * @secure
      * @response `200` `ReportListResponseDto` Список жалоб успешно получен*/
 
-    getReports: (): Promise<ReportListResponseDto> =>
+    getReports: (query: GetReportsParams): Promise<ReportListResponseDto> =>
       $get<ReportListResponseDto>(`/reports`, {
+        params: query,
         isBearer: true,
       }),
 
@@ -2586,7 +2668,10 @@ export class Api {
      * @secure
      * @response `200` `(ReportResponseDto)[]` Список жалоб на пользователя успешно получен*/
 
-    getReportsByReportedUser: (userId): Promise<ReportResponseDto[]> =>
+    getReportsByReportedUser: ({
+      userId,
+      ...query
+    }: GetReportsByReportedUserParams): Promise<ReportResponseDto[]> =>
       $get<ReportResponseDto[]>(`/reports/reported-user/${userId}`, {
         isBearer: true,
       }),
@@ -2691,9 +2776,12 @@ export class Api {
      * @response `400` `void` Жалоба уже рассмотрена
      * @response `404` `void` Жалоба не найдена*/
 
-    resolveReport: (id, data): Promise<ReportResponseDto> =>
+    resolveReport: (
+      { id, ...query }: ResolveReportParams,
+      data: ResolveReportDto,
+    ): Promise<ReportResponseDto> =>
       $put<ReportResponseDto>(`/reports/${id}/resolve`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2735,7 +2823,10 @@ export class Api {
      * @response `200` `StickerPackResponseDto` Набор стикеров успешно получен
      * @response `404` `void` Набор стикеров не найден*/
 
-    getPackById: (id): Promise<StickerPackResponseDto> =>
+    getPackById: ({
+      id,
+      ...query
+    }: GetPackByIdParams): Promise<StickerPackResponseDto> =>
       $get<StickerPackResponseDto>(`/stickers/packs/${id}`, {
         isBearer: true,
       }),
@@ -2758,7 +2849,10 @@ export class Api {
      * @response `200` `StickerResponseDto` Стикер успешно получен
      * @response `404` `void` Стикер не найден*/
 
-    getStickerById: (id): Promise<StickerResponseDto> =>
+    getStickerById: ({
+      id,
+      ...query
+    }: GetStickerByIdParams): Promise<StickerResponseDto> =>
       $get<StickerResponseDto>(`/stickers/${id}`, {
         isBearer: true,
       }),
@@ -2781,7 +2875,10 @@ export class Api {
      * @response `200` `StickerResponseDto` Стикер успешно получен
      * @response `404` `void` Стикер не найден*/
 
-    getStickerByStickerId: (stickerId): Promise<StickerResponseDto> =>
+    getStickerByStickerId: ({
+      stickerId,
+      ...query
+    }: GetStickerByStickerIdParams): Promise<StickerResponseDto> =>
       $get<StickerResponseDto>(`/stickers/by-sticker-id/${stickerId}`, {
         isBearer: true,
       }),
@@ -2807,8 +2904,11 @@ export class Api {
      * @secure
      * @response `200` `(StickerResponseDto)[]` Результаты поиска успешно получены*/
 
-    searchStickers: (): Promise<StickerResponseDto[]> =>
+    searchStickers: (
+      query: SearchStickersParams,
+    ): Promise<StickerResponseDto[]> =>
       $get<StickerResponseDto[]>(`/stickers/search`, {
+        params: query,
         isBearer: true,
       }),
 
@@ -2827,9 +2927,9 @@ export class Api {
      * @secure
      * @response `201` `StickerPackResponseDto`*/
 
-    createPack: (data): Promise<StickerPackResponseDto> =>
+    createPack: (data: CreateStickerPackDto): Promise<StickerPackResponseDto> =>
       $post<StickerPackResponseDto>(`/admin/stickers/packs`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2847,9 +2947,20 @@ export class Api {
      * @secure
      * @response `201` `StickerResponseDto`*/
 
-    createSticker: (data): Promise<StickerResponseDto> =>
+    createSticker: (data: {
+      /** @format binary */
+      image?: File;
+      /** @example "Улыбка" */
+      name?: string;
+      /** @example 1 */
+      order?: number;
+      /** @example "uuid" */
+      packId?: string;
+      /** @example "sticker_123" */
+      stickerId?: string;
+    }): Promise<StickerResponseDto> =>
       $post<StickerResponseDto>(`/admin/stickers/stickers`, {
-        data: data,
+        data,
         isBearer: true,
       }),
 
@@ -2867,7 +2978,7 @@ export class Api {
      * @secure
      * @response `200` `void` Стикер успешно удален*/
 
-    deleteSticker: (id): Promise<void> =>
+    deleteSticker: ({ id, ...query }: DeleteStickerParams): Promise<void> =>
       $delete<void>(`/admin/stickers/stickers/${id}`, {
         isBearer: true,
       }),
